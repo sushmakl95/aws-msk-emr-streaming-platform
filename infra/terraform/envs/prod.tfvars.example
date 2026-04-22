@@ -1,0 +1,39 @@
+project_name = "streaming-platform"
+environment  = "prod"
+aws_region   = "us-east-1"
+cost_center  = "data-platform"
+
+vpc_cidr_block     = "10.70.0.0/16"
+availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
+
+# MSK (prod-size, see docs/COST_ANALYSIS.md)
+msk_broker_count         = 3
+msk_broker_instance_type = "kafka.m5.xlarge"
+msk_ebs_volume_size_gb   = 500
+msk_kafka_version        = "3.6.0"
+
+# MSK Connect
+enable_debezium_pg = true
+enable_s3_sink     = true
+
+# Kinesis
+kinesis_shard_count = 4
+
+# Sinks
+redis_node_type          = "cache.r7g.large"
+opensearch_instance_type = "r6g.large.search"
+opensearch_instance_count = 3
+clickhouse_task_cpu      = 4096
+clickhouse_task_memory   = 16384
+clickhouse_desired_count = 2
+
+postgres_host            = "SET_PER_DEPLOYMENT"
+postgres_password        = "FETCH_FROM_SECRETS_MANAGER"
+opensearch_password      = "FETCH_FROM_SECRETS_MANAGER"
+clickhouse_password      = "FETCH_FROM_SECRETS_MANAGER"
+databricks_workspace_url = "https://dbc-prod.cloud.databricks.com"
+databricks_token         = "FETCH_FROM_SECRETS_MANAGER"
+
+alarm_email_recipients = ["oncall-streaming@example.com", "pager-data@example.com"]
+monthly_budget_usd     = 2500
+log_retention_days     = 90

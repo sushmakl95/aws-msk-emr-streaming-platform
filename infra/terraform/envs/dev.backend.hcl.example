@@ -1,0 +1,5 @@
+bucket         = "streaming-platform-tfstate-dev-<suffix>"
+key            = "streaming-platform/dev/terraform.tfstate"
+region         = "us-east-1"
+dynamodb_table = "streaming-platform-tfstate-locks-dev"
+encrypt        = true

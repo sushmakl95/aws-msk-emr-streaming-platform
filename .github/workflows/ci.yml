@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install "ruff>=0.4.0"
+      - run: ruff check src tests scripts
+
+  typecheck:
+    name: Type Check (mypy)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install "mypy>=1.9.0"
+      - run: mypy src --ignore-missing-imports
+
+  security:
+    name: Security Scan (bandit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install "bandit[toml]>=1.7.8"
+      - run: bandit -c pyproject.toml -r src scripts -lll
+
+  validate-configs:
+    name: Validate Kafka/MSK Connect configs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install "pyyaml>=6.0.1" "jsonschema>=4.21.0"
+      - run: python scripts/validate_connect_configs.py mskconnect/
+
+  terraform:
+    name: Terraform Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.0"
+      - name: Terraform fmt
+        run: |
+          cd infra/terraform
+          terraform fmt -check -recursive || echo "Format issues (non-blocking)"
+        continue-on-error: true
+      - name: Terraform init (backend-less)
+        run: |
+          cd infra/terraform
+          terraform init -backend=false
+      - run: |
+          cd infra/terraform
+          terraform validate
+
+  test-info:
+    name: "Unit tests: run locally"
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "PySpark unit tests need Java 17 + Spark 3.5 + Docker for integration tests."
+          echo "Run locally via 'make test-unit' and 'make test-integration'."
+          echo "See docs/LOCAL_DEVELOPMENT.md"

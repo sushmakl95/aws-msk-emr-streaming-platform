@@ -1,0 +1,65 @@
+# Sink definitions consumed by streaming jobs.
+# Per-sink config is also set in Terraform vars; this file documents
+# what each job writes where.
+
+sinks:
+  # HOT: microsecond lookups, bounded TTL
+  - name: redis-orders-hot
+    type: redis
+    host: "${REDIS_ENDPOINT}"
+    port: 6379
+    ssl: true
+    key_prefix: "order:"
+    key_field: "order_id"
+    ttl_seconds: 3600
+    used_by: ["orders_cdc_enrichment"]
+
+  - name: redis-sessions-hot
+    type: redis
+    host: "${REDIS_ENDPOINT}"
+    port: 6379
+    ssl: true
+    key_prefix: "session:"
+    key_field: "session_id"
+    ttl_seconds: 1800
+    used_by: ["clickstream_aggregation"]
+
+  # WARM: search + aggregation in ms
+  - name: opensearch-orders
+    type: opensearch
+    endpoint: "${OPENSEARCH_ENDPOINT}"
+    index_pattern: "orders-{yyyy_mm_dd}"
+    timestamp_field: "order_ts"
+    used_by: ["orders_cdc_enrichment"]
+
+  - name: clickhouse-page-views-5min
+    type: clickhouse
+    host: "${CLICKHOUSE_HOST}"
+    database: "analytics"
+    target_table: "country_page_views_5min"
+    used_by: ["clickstream_aggregation"]
+
+  - name: clickhouse-user-sessions
+    type: clickhouse
+    host: "${CLICKHOUSE_HOST}"
+    database: "analytics"
+    target_table: "user_sessions"
+    used_by: ["clickstream_aggregation"]
+
+  # COLD: cheap, unbounded retention
+  - name: s3-orders-cold
+    type: s3_iceberg
+    catalog: "glue_catalog"
+    database: "streaming"
+    table: "orders_events"
+    warehouse: "${ICEBERG_WAREHOUSE}"
+    partition_by: ["event_date"]
+    used_by: ["orders_cdc_enrichment"]
+
+  # BROADCAST: live push to WebSocket clients
+  - name: websocket-alerts
+    type: websocket
+    bootstrap_servers: "${MSK_BOOTSTRAP}"
+    broadcast_topic: "ws-broadcast"
+    user_targets_field: "user_targets"
+    used_by: ["realtime_alerting"]

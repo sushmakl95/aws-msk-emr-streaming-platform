@@ -1,0 +1,60 @@
+{
+  "widgets": [
+    {
+      "type": "metric",
+      "x": 0, "y": 0, "width": 12, "height": 6,
+      "properties": {
+        "metrics": [
+          ["AWS/Kafka", "BytesInPerSec"],
+          [".", "BytesOutPerSec"]
+        ],
+        "period": 60,
+        "stat": "Average",
+        "region": "us-east-1",
+        "title": "MSK Throughput"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12, "y": 0, "width": 12, "height": 6,
+      "properties": {
+        "metrics": [
+          ["AWS/Kafka", "UnderReplicatedPartitions"],
+          [".", "OfflinePartitionsCount"]
+        ],
+        "period": 60,
+        "stat": "Maximum",
+        "region": "us-east-1",
+        "title": "MSK Health"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0, "y": 6, "width": 12, "height": 6,
+      "properties": {
+        "metrics": [
+          ["AWS/KinesisAnalytics", "lastCheckpointDuration"],
+          [".", "fullRestarts"],
+          [".", "numLateRecordsDropped"]
+        ],
+        "period": 300,
+        "stat": "Sum",
+        "region": "us-east-1",
+        "title": "Flink Pipeline Health"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12, "y": 6, "width": 12, "height": 6,
+      "properties": {
+        "metrics": [
+          ["Streaming/Platform", "LagMs"]
+        ],
+        "period": 300,
+        "stat": "p99",
+        "region": "us-east-1",
+        "title": "End-to-End Lag (P99)"
+      }
+    }
+  ]
+}

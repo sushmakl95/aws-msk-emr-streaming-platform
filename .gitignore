@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Spark
+spark-warehouse/
+metastore_db/
+derby.log
+*.log
+checkpoints/
+
+# Kafka
+kafka-logs/
+zookeeper/
+
+# Flink
+flink-checkpoints/
+flink-savepoints/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Terraform
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+.terraform/
+.terraform.lock.hcl
+terraform.tfplan
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials*.json
+
+# Build artifacts
+dist/
+build/
+target/
+*.jar
+!src/flink/lib/*.jar
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+.DS_Store

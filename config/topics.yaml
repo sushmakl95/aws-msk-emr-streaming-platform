@@ -1,0 +1,81 @@
+# MSK topics provisioned by `streaming create-topics`.
+
+topics:
+  # CDC topics (produced by Debezium)
+  - name: cdc.public.orders
+    partitions: 18
+    replication_factor: 3
+    config:
+      retention.ms: "604800000"       # 7 days
+      compression.type: "lz4"
+      min.insync.replicas: "2"
+      cleanup.policy: "delete"
+
+  - name: cdc.public.order_items
+    partitions: 18
+    replication_factor: 3
+    config:
+      retention.ms: "604800000"
+      compression.type: "lz4"
+      min.insync.replicas: "2"
+
+  - name: cdc.public.customers
+    partitions: 6
+    replication_factor: 3
+    config:
+      retention.ms: "604800000"
+      compression.type: "lz4"
+      min.insync.replicas: "2"
+
+  - name: cdc.inventory.stock_levels
+    partitions: 12
+    replication_factor: 3
+    config:
+      retention.ms: "604800000"
+      compression.type: "lz4"
+
+  - name: cdc.sessions.user_sessions
+    partitions: 12
+    replication_factor: 3
+    config:
+      retention.ms: "259200000"       # 3 days
+      compression.type: "lz4"
+
+  # App event topics (produced by Lambda or SDK)
+  - name: app.clickstream
+    partitions: 24
+    replication_factor: 3
+    config:
+      retention.ms: "259200000"
+      compression.type: "lz4"
+      min.insync.replicas: "2"
+
+  - name: app.transactions
+    partitions: 12
+    replication_factor: 3
+    config:
+      retention.ms: "604800000"
+      compression.type: "lz4"
+      min.insync.replicas: "2"
+
+  # WebSocket broadcast fan-out
+  - name: ws-broadcast
+    partitions: 6
+    replication_factor: 3
+    config:
+      retention.ms: "3600000"          # 1 hour
+      compression.type: "lz4"
+
+  # Internal
+  - name: __debezium-heartbeat
+    partitions: 1
+    replication_factor: 3
+    config:
+      retention.ms: "86400000"         # 1 day
+      cleanup.policy: "compact"
+
+  - name: __s3-sink-dlq
+    partitions: 3
+    replication_factor: 3
+    config:
+      retention.ms: "604800000"

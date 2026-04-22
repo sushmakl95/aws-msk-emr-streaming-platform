@@ -1,0 +1,108 @@
+{
+  "title": "Streaming Platform Health",
+  "uid": "streaming-health",
+  "version": 1,
+  "schemaVersion": 39,
+  "tags": ["streaming", "kafka", "spark", "flink"],
+  "refresh": "30s",
+  "time": { "from": "now-6h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "title": "MSK Throughput (bytes/sec)",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 6 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [
+        { "namespace": "AWS/Kafka", "metricName": "BytesInPerSec", "statistic": "Average", "period": "60" },
+        { "namespace": "AWS/Kafka", "metricName": "BytesOutPerSec", "statistic": "Average", "period": "60" }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Consumer Lag (seconds)",
+      "type": "gauge",
+      "gridPos": { "x": 12, "y": 0, "w": 6, "h": 6 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 600,
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": 0 },
+              { "color": "yellow", "value": 60 },
+              { "color": "red", "value": 300 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        { "namespace": "AWS/Kafka", "metricName": "EstimatedMaxTimeLag", "statistic": "Maximum", "period": "60" }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Under-Replicated Partitions",
+      "type": "stat",
+      "gridPos": { "x": 18, "y": 0, "w": 6, "h": 6 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": 0 },
+              { "color": "red", "value": 1 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        { "namespace": "AWS/Kafka", "metricName": "UnderReplicatedPartitions", "statistic": "Maximum", "period": "60" }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Flink Checkpoint Duration",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 6, "w": 12, "h": 6 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [
+        { "namespace": "AWS/KinesisAnalytics", "metricName": "lastCheckpointDuration", "statistic": "Average", "period": "300" }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Flink Backpressure (ms/sec)",
+      "type": "timeseries",
+      "gridPos": { "x": 12, "y": 6, "w": 12, "h": 6 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [
+        { "namespace": "AWS/KinesisAnalytics", "metricName": "backPressuredTimeMsPerSecond", "statistic": "Average", "period": "60" }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Sink Write Latency",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 12, "w": 12, "h": 6 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [
+        { "namespace": "Streaming/Platform", "metricName": "SinkWriteDurationMs", "dimensions": { "SinkName": "redis-orders-hot" }, "statistic": "Average" },
+        { "namespace": "Streaming/Platform", "metricName": "SinkWriteDurationMs", "dimensions": { "SinkName": "opensearch-orders" }, "statistic": "Average" },
+        { "namespace": "Streaming/Platform", "metricName": "SinkWriteDurationMs", "dimensions": { "SinkName": "s3-orders-cold" }, "statistic": "Average" }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Records In vs Out",
+      "type": "timeseries",
+      "gridPos": { "x": 12, "y": 12, "w": 12, "h": 6 },
+      "datasource": { "type": "cloudwatch", "uid": "cloudwatch" },
+      "targets": [
+        { "namespace": "Streaming/Platform", "metricName": "RecordsIn", "statistic": "Sum", "period": "60" },
+        { "namespace": "Streaming/Platform", "metricName": "RecordsOut", "statistic": "Sum", "period": "60" }
+      ]
+    }
+  ]
+}
