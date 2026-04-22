@@ -64,7 +64,7 @@ def stream_stream_join(
     )
 
 
-def refresh_dim_df(spark, dim_source: str, refresh_timestamp: str = None) -> DataFrame:
+def refresh_dim_df(spark, dim_source: str, refresh_timestamp: str | None = None) -> DataFrame:
     """Load/refresh a dimension DataFrame at job restart.
 
     For slowly-changing dims, re-read on restart (daily/weekly cadence).

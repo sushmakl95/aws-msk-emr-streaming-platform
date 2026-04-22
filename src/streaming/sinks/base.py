@@ -101,9 +101,9 @@ def extract_idempotency_token(record: dict[str, Any]) -> str:
     Strategy: prefer CDC LSN; fall back to event_id; finally to a composite
     of topic + partition + offset.
     """
-    if "lsn" in record and record["lsn"]:
+    if record.get("lsn"):
         return f"lsn:{record['lsn']}"
-    if "event_id" in record and record["event_id"]:
+    if record.get("event_id"):
         return f"eid:{record['event_id']}"
     topic = record.get("raw_topic", "?")
     partition = record.get("raw_partition", "?")

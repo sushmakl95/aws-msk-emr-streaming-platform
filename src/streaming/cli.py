@@ -95,7 +95,7 @@ def submit_emr(
 @click.option("--dry-run", is_flag=True)
 def create_topics(bootstrap_servers: str, config_file: str, dry_run: bool) -> None:
     """Create MSK topics defined in config/topics.yaml."""
-    import yaml
+    import yaml  # type: ignore[import-untyped]
 
     data = yaml.safe_load(Path(config_file).read_text())
     topics = data.get("topics", [])

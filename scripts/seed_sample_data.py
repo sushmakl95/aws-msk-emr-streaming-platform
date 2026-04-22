@@ -9,7 +9,7 @@ import os
 import random
 import time
 import uuid
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 
 import psycopg2
 from faker import Faker

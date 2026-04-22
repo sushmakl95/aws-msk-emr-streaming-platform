@@ -4,31 +4,13 @@ from __future__ import annotations
 
 import pytest
 from pyspark.sql import functions as F
-from pyspark.sql.types import (
-    IntegerType,
-    StringType,
-    StructField,
-    StructType,
-    TimestampType,
-)
 
 from streaming.transforms.windowing import (
-    session_window,
     sliding_window,
     tumbling_window,
 )
 
 pytestmark = pytest.mark.unit
-
-
-def _make_click_df(spark, rows: list[tuple]):
-    """Create a simple clicks DataFrame for testing."""
-    schema = StructType([
-        StructField("user_id", StringType(), True),
-        StructField("event_time", TimestampType(), True),
-        StructField("page_load_ms", IntegerType(), True),
-    ])
-    return spark.createDataFrame(rows, schema)
 
 
 def test_tumbling_window_counts_events_correctly(spark):
@@ -38,9 +20,6 @@ def test_tumbling_window_counts_events_correctly(spark):
         ("u1", "2026-04-22 10:02:00", 200),
         ("u1", "2026-04-22 10:06:00", 300),  # next window
     ]
-    df = spark.createDataFrame(
-        [(u, F.to_timestamp(F.lit(t)).cast("timestamp"), p) for u, t, p in rows]
-    )
 
     # For non-streaming data, we can just directly verify windowing logic
     # Use Spark's window function directly since our transform is a wrapper

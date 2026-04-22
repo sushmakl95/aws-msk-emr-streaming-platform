@@ -16,7 +16,6 @@ import re
 import sys
 from pathlib import Path
 
-
 REQUIRED_COMMON = {"name", "connector.class"}
 
 REQUIRED_BY_CONNECTOR = {
