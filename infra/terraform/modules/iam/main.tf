@@ -198,8 +198,8 @@ resource "aws_iam_role_policy" "msk_connect" {
         ]
       },
       {
-        Effect = "Allow"
-        Action = ["s3:PutObject", "s3:GetObject", "s3:ListBucket"]
+        Effect   = "Allow"
+        Action   = ["s3:PutObject", "s3:GetObject", "s3:ListBucket"]
         Resource = concat(var.s3_bucket_arns, [for arn in var.s3_bucket_arns : "${arn}/*"])
       },
       {
@@ -237,8 +237,8 @@ resource "aws_iam_role_policy" "flink" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
-        Action = ["s3:GetObject", "s3:PutObject", "s3:ListBucket"]
+        Effect   = "Allow"
+        Action   = ["s3:GetObject", "s3:PutObject", "s3:ListBucket"]
         Resource = concat(var.s3_bucket_arns, [for arn in var.s3_bucket_arns : "${arn}/*"])
       },
       {

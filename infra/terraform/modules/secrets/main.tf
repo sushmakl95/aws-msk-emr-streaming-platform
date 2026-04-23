@@ -33,12 +33,12 @@ variable "databricks_token" {
 
 locals {
   credentials = {
-    postgres    = { value = var.postgres_password, enabled = var.postgres_password != "" }
-    mysql       = { value = var.mysql_password, enabled = var.mysql_password != "" }
-    mongo       = { value = var.mongo_connection, enabled = var.mongo_connection != "" }
-    clickhouse  = { value = var.clickhouse_password, enabled = var.clickhouse_password != "" }
-    opensearch  = { value = var.opensearch_password, enabled = var.opensearch_password != "" }
-    databricks  = { value = var.databricks_token, enabled = var.databricks_token != "" }
+    postgres   = { value = var.postgres_password, enabled = var.postgres_password != "" }
+    mysql      = { value = var.mysql_password, enabled = var.mysql_password != "" }
+    mongo      = { value = var.mongo_connection, enabled = var.mongo_connection != "" }
+    clickhouse = { value = var.clickhouse_password, enabled = var.clickhouse_password != "" }
+    opensearch = { value = var.opensearch_password, enabled = var.opensearch_password != "" }
+    databricks = { value = var.databricks_token, enabled = var.databricks_token != "" }
   }
   enabled_credentials = { for k, v in local.credentials : k => v if v.enabled }
 }

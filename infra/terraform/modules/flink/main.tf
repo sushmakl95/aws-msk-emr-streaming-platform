@@ -16,7 +16,7 @@ resource "aws_cloudwatch_log_stream" "flink" {
 
 resource "aws_kinesisanalyticsv2_application" "orders_enrichment" {
   name                   = "${var.name_prefix}-orders-enrichment"
-  runtime_environment    = "FLINK-1_18"
+  runtime_environment    = "FLINK-1_19"
   service_execution_role = var.service_role_arn
 
   application_configuration {
@@ -34,17 +34,17 @@ resource "aws_kinesisanalyticsv2_application" "orders_enrichment" {
       property_group {
         property_group_id = "kinesis.analytics.flink.run.options"
         property_map = {
-          "python"   = "orders_enrichment.py"
-          "jarfile"  = "lib/flink-sql-connector-kafka-3.1.0-1.18.jar"
+          "python"  = "orders_enrichment.py"
+          "jarfile" = "lib/flink-sql-connector-kafka-3.2.0-1.19.jar"
         }
       }
     }
 
     flink_application_configuration {
       checkpoint_configuration {
-        configuration_type = "CUSTOM"
-        checkpointing_enabled = true
-        checkpoint_interval   = 30000
+        configuration_type            = "CUSTOM"
+        checkpointing_enabled         = true
+        checkpoint_interval           = 30000
         min_pause_between_checkpoints = 5000
       }
 

@@ -38,8 +38,8 @@ resource "aws_opensearch_domain" "this" {
   engine_version = "OpenSearch_2.13"
 
   cluster_config {
-    instance_type  = var.instance_type
-    instance_count = var.instance_count
+    instance_type          = var.instance_type
+    instance_count         = var.instance_count
     zone_awareness_enabled = var.instance_count > 1
     dynamic "zone_awareness_config" {
       for_each = var.instance_count > 1 ? [1] : []
